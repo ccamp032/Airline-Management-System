@@ -330,7 +330,7 @@ public class DBproject {
 			if(input.equals("Y")) {
 				try {
 					esql.executeUpdate(query);
-					System.out.println("Data was inserted into the database!");
+					System.out.println("\nData was inserted into the database!");
 				}catch (Exception e) {
 					System.err.println (e.getMessage());
 				}
@@ -771,6 +771,7 @@ public class DBproject {
 				continue;
 			}
 		}while (true);
+		
 		String query = "SELECT COUNT(*)\nFROM Reservation\nWHERE fid = " + number + " AND status = \'" + status + "\';";
 		outputData(esql, query);
 	}
