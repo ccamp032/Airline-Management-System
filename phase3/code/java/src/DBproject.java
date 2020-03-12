@@ -327,18 +327,21 @@ public class DBproject {
 		String input;
 		try {
 			input = in.readLine();
-			if(input == "Y") {
+			if(input.equals("Y")) {
 				try {
 					esql.executeUpdate(query);
+					System.out.println("Data was inserted into the database!");
 				}catch (Exception e) {
 					System.err.println (e.getMessage());
 				}
 			}
-			else
-				System.out.println("Data was not inserted into the database!");
+			else {
+				System.out.println("\nData was NOT inserted into the database!");
+			}
 		}catch (Exception e) {
 			System.err.println (e.getMessage());
 		}
+		System.out.println("-----------------------------------------------------------------");
 	}
 
 	//Output data
@@ -437,14 +440,15 @@ public class DBproject {
 				continue;
 			}
 		}while (true);
-		
 
-		System.out.println("Are you sure you want to input the new data below into PLANE? (Y/N)\n");
-		System.out.println("       Plane ID = " + planeID);
-		System.out.println("     Plane Make = " + make);
-		System.out.println("    Plane Model = " + model);
-		System.out.println("      Plane Age = " + age);
-		System.out.println("Number of Seats = " + seats);
+		System.out.println("\n---------------------------------------");
+		System.out.println("|        Plane ID = " + planeID);
+		System.out.println("|      Plane Make = " + make);
+		System.out.println("|     Plane Model = " + model);
+		System.out.println("|       Plane Age = " + age);
+		System.out.println("| Number of Seats = " + seats);
+		System.out.println("---------------------------------------");
+		System.out.println("\nAre you sure you want to input the new data above into PLANE? (Y/N): ");
 		String query = "INSERT INTO Plane (id, make, model, age, seats) VALUES (" + planeID + ", \'" + make + "\', \'" + model + "\', " + age + ", " + seats + ");";
 		inputData(esql, query);
 	}
@@ -498,10 +502,13 @@ public class DBproject {
 			}
 		} while (true);
 
-		System.out.println("Are you sure you want to input the new data below into PILOT? (Y/N)\n");
-		System.out.println("         Pilot ID = " + pilotID);
-		System.out.println("       Pilot Name = " + name);
-		System.out.println("Pilot Nationality = " + nationality);
+		System.out.println("\n---------------------------------------");
+		System.out.println("|          Pilot ID = " + pilotID);
+		System.out.println("|        Pilot Name = " + name);
+		System.out.println("| Pilot Nationality = " + nationality);
+		System.out.println("---------------------------------------");
+
+		System.out.print("\nAre you sure you want to input the new data above into PILOT? (Y/N): ");
 		String query = "INSERT INTO Pilot (id, fullname, nationality) VALUES (" + pilotID + ", \'" + name + "\', \'" + nationality + "\');";
 		inputData(esql, query);
 	}
@@ -636,16 +643,19 @@ public class DBproject {
 				continue;
 			}
 		}while (true);
-		
-		System.out.println("Are you sure you want to input the new data below into FLIGHT? (Y/N)\n");
-		System.out.println("       Flight Number = " + flightNum);
-		System.out.println("         Flight Cost = " + cost);
-		System.out.println("Number of Seats Sold = " + sold);
-		System.out.println("     Number of Stops = " + stops);
-		System.out.println("      Departure Time = " + leave);
-		System.out.println("        Arrival Time = " + arrival);
-		System.out.println("         Destination = " + destination);
-		System.out.println("           Departure = " + departure);
+
+		System.out.println("\n---------------------------------------");
+		System.out.println("|        Flight Number = " + flightNum);
+		System.out.println("|          Flight Cost = " + cost);
+		System.out.println("| Number of Seats Sold = " + sold);
+		System.out.println("|      Number of Stops = " + stops);
+		System.out.println("|       Departure Time = " + leave);
+		System.out.println("|         Arrival Time = " + arrival);
+		System.out.println("|          Destination = " + destination);
+		System.out.println("|            Departure = " + departure);
+		System.out.println("---------------------------------------");
+
+		System.out.print("\nAre you sure you want to input the new data above into FLIGHT? (Y/N): ");
 		String query = "INSERT INTO Flight (fnum, cost, num_sold, num_stops, actual_departure_date, actual_arrival_date, arrival_airport, departure_airport) VALUES (" + flightNum + ", " + cost + ", " + sold + ", " + stops + ", \'" + leave + "\', \'" + arrival + "\', \'" + destination + "\', \'" + departure + "\');";
 		inputData(esql, query);
 	}
@@ -685,9 +695,12 @@ public class DBproject {
 			}
 		}while (true);
 
-		System.out.println("Are you sure you want to input the new data below into TECHNICIAN? (Y/N)\n");
-		System.out.println("  Technician ID = " + techID);
-		System.out.println("Technician Name = " + techName);
+		System.out.println("\n---------------------------------------");
+		System.out.println("|   Technician ID = " + techID);
+		System.out.println("| Technician Name = " + techName);
+		System.out.println("---------------------------------------");
+		System.out.print("\nAre you sure you want to input the new data below into TECHNICIAN? (Y/N): ");
+
 		String query = "INSERT INTO Technician (id, full_name) VALUES (" + techID + ", \'" + techName + "\');";
 		inputData(esql, query);
 	}
