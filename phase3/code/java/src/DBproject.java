@@ -339,7 +339,8 @@ public class DBproject {
 						break;
 					}catch (Exception e) {
 						System.err.println (e.getMessage());
-						continue;
+						System.out.println("\nData was NOT inserted into the database!");
+						break;
 					}
 				}
 				else if(input.equals("N") || input.equals("n")) {
