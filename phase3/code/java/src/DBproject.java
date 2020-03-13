@@ -330,7 +330,11 @@ public class DBproject {
 				input = in.readLine();
 				if(input.equals("Y") || input.equals("y")) {
 					try {
+						java.util.Date startTime = new java.util.Date();
 						esql.executeUpdate(query);
+						java.util.Date endTime = new java.util.Date();
+						long elapsedTime = endTime.getTime() - startTime.getTime();
+    					System.out.println("\nElapsed time: " + elapsedTime + " ms");
 						System.out.println("\nData was inserted into the database!");
 						break;
 					}catch (Exception e) {
@@ -359,7 +363,12 @@ public class DBproject {
 		int var=0;
 		try {
 			System.out.println("-----------------------------------------------------------------");
+			java.util.Date startTime = new java.util.Date();
 			var = esql.executeQueryAndPrintResult(query);
+			java.util.Date endTime = new java.util.Date();
+			long elapsedTime = endTime.getTime() - startTime.getTime();
+			System.out.println("\ntotal row(s): " + var);
+    		System.out.println("Elapsed time: " + elapsedTime + " ms");
 			System.out.println("-----------------------------------------------------------------");
 		}catch (Exception e) {
 			System.err.println (e.getMessage());
