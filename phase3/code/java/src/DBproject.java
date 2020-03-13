@@ -325,22 +325,32 @@ public class DBproject {
     //Input data into query based on user's input
 	public static void inputData(DBproject esql, String query) {
 		String input;
-		try {
-			input = in.readLine();
-			if(input.equals("Y")) {
-				try {
-					esql.executeUpdate(query);
-					System.out.println("\nData was inserted into the database!");
-				}catch (Exception e) {
-					System.err.println (e.getMessage());
+		do {
+			try {
+				input = in.readLine();
+				if(input.equals("Y") || input.equals("y")) {
+					try {
+						esql.executeUpdate(query);
+						System.out.println("\nData was inserted into the database!");
+						break;
+					}catch (Exception e) {
+						System.err.println (e.getMessage());
+						continue;
+					}
 				}
+				else if(input.equals("N") || input.equals("n")) {
+					System.out.println("\nData was NOT inserted into the database!");
+					break;
+				}
+				else {
+					System.out.println("\nYour input is invalid!");
+					System.out.print("\nPlease enter (Y/N): ");
+				}
+			}catch (Exception e) {
+				System.err.println (e.getMessage());
+				continue;
 			}
-			else {
-				System.out.println("\nData was NOT inserted into the database!");
-			}
-		}catch (Exception e) {
-			System.err.println (e.getMessage());
-		}
+		}while (true);
 		System.out.println("-----------------------------------------------------------------");
 	}
 
@@ -353,6 +363,52 @@ public class DBproject {
 		}catch (Exception e) {
 			System.err.println (e.getMessage());
 		}
+	}
+
+	public static String getReservationStatus() {
+		String status;
+		do {
+			try {
+				status = in.readLine();
+				if(!status.equals("W") && !status.equals("R") && !status.equals("C"))
+					throw new RuntimeException("Input only accepts the following: W, R, C");
+				break;
+			}catch (Exception e) {
+				System.err.println (e.getMessage());
+				continue;
+			}
+		}while (true);
+		return status;
+	}
+
+	public static int getCustomerID() {
+		int customerID;
+		do {
+			System.out.print("Input Customer ID: ");
+			try {
+				customerID = Integer.parseInt(in.readLine());
+				break;
+			}catch (Exception e) {
+				System.out.println("Your input is invalid!");
+				continue;
+			}
+		}while (true);
+		return customerID;
+	}
+
+	public static int getFlightNumber() {
+		int flightNum;
+		do {
+			System.out.print("Input Flight Number: ");
+			try {
+				flightNum = Integer.parseInt(in.readLine());
+				break;
+			}catch (Exception e) {
+				System.out.println("Your input is invalid!");
+				continue;
+			}
+		}while (true);
+		return flightNum;
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////
@@ -424,7 +480,7 @@ public class DBproject {
 		}while (true);
 		
 
-		//Get number of seats on plan...has to be between 0 and 500 inclusive
+		//Get number of seats on plane...has to be between 0 and 500 inclusive
 		do {
 			System.out.print("Input Number of Plane Seats: ");
 			try {
@@ -448,7 +504,7 @@ public class DBproject {
 		System.out.println("|       Plane Age = " + age);
 		System.out.println("| Number of Seats = " + seats);
 		System.out.println("---------------------------------------");
-		System.out.println("\nAre you sure you want to input the new data above into PLANE? (Y/N): ");
+		System.out.print("\nAre you sure you want to input the new data above into PLANE? (Y/N): ");
 		String query = "INSERT INTO Plane (id, make, model, age, seats) VALUES (" + planeID + ", \'" + make + "\', \'" + model + "\', " + age + ", " + seats + ");";
 		inputData(esql, query);
 	}
@@ -526,16 +582,7 @@ public class DBproject {
 		
 		System.out.println("-----------------------------------------------------------------");
 
-		do {
-			System.out.print("Input Flight Number: ");
-			try {
-				flightNum = Integer.parseInt(in.readLine());
-				break;
-			}catch (Exception e) {
-				System.out.println("Your input is invalid!");
-				continue;
-			}
-		}while (true);
+		flightNum = getFlightNumber();
 		
 		//Get flight cost
 		do {
@@ -710,6 +757,97 @@ public class DBproject {
 	/////////////////////////////////////////////////////////////////////////////////////
 	public static void BookFlight(DBproject esql) {//5
 		// Given a customer and a flight that he/she wants to book, add a reservation to the DB
+
+		int customerID, flightNum, reserve;
+		String input, status, query;
+		
+		//Get customer ID
+		customerID = getCustomerID();
+		
+		//Get flight number
+		flightNum = getFlightNumber();
+		
+		try {
+			query = "SELECT status\nFROM Reservation\nWHERE cid = " + customerID + " AND fid = " + flightNum + ";";
+			
+			//Run query to see if it exists
+			if(esql.executeQueryAndPrintResult(query) == 0) {
+				do {
+					System.out.println("The Reservation with customer ID " + customerID + " and flight number " + flightNum + " does not exist. Would you like to book a reservation? (Y/N): ");
+					try {
+						input = in.readLine();
+						if(input.equals("Y") || input.equals("y")) {
+
+							//Input new reservation number
+							do {
+								System.out.print("Input NEW Reservation Number: ");
+								try {
+									reserve = Integer.parseInt(in.readLine());
+									break;
+								}catch (Exception e) {
+									System.out.println("Your input is invalid!");
+									continue;
+								}
+							}while (true);
+							
+							//Input new reservation status
+							System.out.print("Input NEW Reservation Status: ");
+							status = getReservationStatus();
+
+							//Insert new data into database
+							try {
+								query = "INSERT INTO Reservation (rnum, cid, fid, status) VALUES (" + reserve + ", " + customerID + ", " + flightNum + ", \'" + status + "\');";
+								esql.executeUpdate(query);
+							}catch (Exception e) {
+								System.err.println (e.getMessage());
+							}
+							
+						}
+						//If user enter something other than Y,y,N,n
+						else if(!input.equals("N") || !input.equals("n")) {
+							throw new RuntimeException("Your input is invalid!");
+						}
+						break;
+					}catch (Exception e) {
+						System.err.println (e.getMessage());
+						continue;
+					}
+				}while (true);
+			}
+			//If reservation already exists...
+			else {
+				do{
+					try{
+						System.out.println("Would you like to update the reservation? (Y/N): ");
+						input = in.readLine();
+						if(input.equals("Y") || input.equals("y")) {
+
+							//Input updated reservation status
+							System.out.print("Input UPDATED Reservation Status: ");
+							status = getReservationStatus();
+
+							//Update existing data in the database
+							try {
+								query = "UPDATE Reservation SET status = \'" + status + "\' WHERE cid = " + customerID + " AND fid = " + flightNum + ";";
+								esql.executeUpdate(query);
+							}catch (Exception e) {
+								System.err.println (e.getMessage());
+							}
+						}
+						//If user enter something other than Y,y,N,n
+						else if(!input.equals("N") || !input.equals("n")) {
+							throw new RuntimeException("Your input is invalid!");
+						}
+						break;
+					}catch (Exception e) {
+						System.err.println (e.getMessage());
+						continue;
+					}
+				}while (true);
+			}
+		}catch (Exception e) {
+			System.err.println (e.getMessage());
+		}
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////
@@ -724,6 +862,7 @@ public class DBproject {
 	/////////////////////////////////////////////////////////////////////////////////////
 	public static void ListsTotalNumberOfRepairsPerPlane(DBproject esql) {//7
 		// Count number of repairs per planes and list them in descending order
+
 		String query = "SELECT P.id, count(R.rid)\nFROM Plane P, Repairs R\nWHERE P.id = R.plane_id\nGROUP BY P.id\nORDER BY count DESC;";
 		outputData(esql, query);
 	}
@@ -733,6 +872,7 @@ public class DBproject {
 	/////////////////////////////////////////////////////////////////////////////////////
 	public static void ListTotalNumberOfRepairsPerYear(DBproject esql) {//8
 		// Count repairs per year and list them in ascending order
+
 		String query = "SELECT EXTRACT (year FROM R.repair_date) as \"Year\", count(R.rid)\nFROM repairs R\nGROUP BY \"Year\"\nORDER BY count ASC;";
 		outputData(esql, query);
 	}
@@ -742,37 +882,19 @@ public class DBproject {
 	/////////////////////////////////////////////////////////////////////////////////////
 	public static void FindPassengersCountWithStatus(DBproject esql) {//9
 		// Find how many passengers there are with a status (i.e. W,C,R) and list that number.
-		int number;
+		int flightNum;
 		String status;
 		
 		System.out.println("-----------------------------------------------------------------");
+
 		//Get flight number
-		do {
-			System.out.print("Input Flight Number: ");
-			try {
-				number = Integer.parseInt(in.readLine());
-				break;
-			}catch (Exception e) {
-				System.out.println("Your input is invalid!");
-				continue;
-			}
-		}while (true);
+		flightNum = getFlightNumber();
 		
 		//Get passenger status (W,R,C)
-		do {
-			System.out.print("Input Passenger Status: ");
-			try {
-				status = in.readLine();
-				if(!status.equals("W") && !status.equals("R") && !status.equals("C"))
-					throw new RuntimeException("Input only accepts the following inputs: W, R, C");
-				break;
-			}catch (Exception e) {
-				System.err.println (e.getMessage());
-				continue;
-			}
-		}while (true);
-		
-		String query = "SELECT COUNT(*)\nFROM Reservation\nWHERE fid = " + number + " AND status = \'" + status + "\';";
+		System.out.print("Input Passenger Status: ");
+		status = getReservationStatus();
+
+		String query = "SELECT COUNT(*)\nFROM Reservation\nWHERE fid = " + flightNum + " AND status = \'" + status + "\';";
 		outputData(esql, query);
 	}
 }
