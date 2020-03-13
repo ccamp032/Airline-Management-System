@@ -354,17 +354,23 @@ public class DBproject {
 		System.out.println("-----------------------------------------------------------------");
 	}
 
-	//Output data
-	public static void outputData(DBproject esql, String query) {
+	//Output data from database
+	public static int outputData(DBproject esql, String query) {
+		int var=0;
 		try {
 			System.out.println("-----------------------------------------------------------------");
-			esql.executeQueryAndPrintResult(query);
+			var = esql.executeQueryAndPrintResult(query);
 			System.out.println("-----------------------------------------------------------------");
 		}catch (Exception e) {
 			System.err.println (e.getMessage());
 		}
+		return var;
 	}
 
+
+	/////////////////////////////////////////////////////////////////////////////////////
+	//// GET FUNCTIONS
+	/////////////////////////////////////////////////////////////////////////////////////
 	public static String getReservationStatus() {
 		String status;
 		do {
@@ -375,6 +381,7 @@ public class DBproject {
 				break;
 			}catch (Exception e) {
 				System.err.println (e.getMessage());
+				System.out.print("Re-Input Status: ");
 				continue;
 			}
 		}while (true);
@@ -576,7 +583,7 @@ public class DBproject {
 		// Given a pilot, plane and flight, adds a flight in the DB
 
 		int flightNum, cost, sold, stops;
-		String leave, arrival, destination, departure;
+		String departTime, arrival, destination, departLoc;
 		LocalDate leaveDate;
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 		
@@ -639,8 +646,8 @@ public class DBproject {
 		do {
 			System.out.print("Input Departure Time (YYYY-MM-DD hh:mm): ");
 			try {
-				leave = in.readLine();
-				leaveDate = LocalDate.parse(leave, formatter);
+				departTime = in.readLine();
+				leaveDate = LocalDate.parse(departTime, formatter);
 				break;
 			}catch (Exception e) {
 				System.out.println("Your input is invalid!");
@@ -677,12 +684,12 @@ public class DBproject {
 			}
 		}while (true);
 		
-		//Get flight departure
+		//Get flight departLoc
 		do {
 			System.out.print("Input Departure Airport: ");
 			try {
-				departure = in.readLine();
-				if(departure.length() <= 0 || departure.length() > 5)
+				departLoc = in.readLine();
+				if(departLoc.length() <= 0 || departLoc.length() > 5)
 					throw new RuntimeException("Departure Airport cannot be null or exceed 5 characters");
 				break;
 			}catch (Exception e) {
@@ -696,14 +703,14 @@ public class DBproject {
 		System.out.println("|          Flight Cost = " + cost);
 		System.out.println("| Number of Seats Sold = " + sold);
 		System.out.println("|      Number of Stops = " + stops);
-		System.out.println("|       Departure Time = " + leave);
+		System.out.println("|       Departure Time = " + departTime);
 		System.out.println("|         Arrival Time = " + arrival);
 		System.out.println("|          Destination = " + destination);
-		System.out.println("|            Departure = " + departure);
+		System.out.println("|            Departure = " + departLoc);
 		System.out.println("---------------------------------------");
 
 		System.out.print("\nAre you sure you want to input the new data above into FLIGHT? (Y/N): ");
-		String query = "INSERT INTO Flight (fnum, cost, num_sold, num_stops, actual_departure_date, actual_arrival_date, arrival_airport, departure_airport) VALUES (" + flightNum + ", " + cost + ", " + sold + ", " + stops + ", \'" + leave + "\', \'" + arrival + "\', \'" + destination + "\', \'" + departure + "\');";
+		String query = "INSERT INTO Flight (fnum, cost, num_sold, num_stops, actual_departure_date, actual_arrival_date, arrival_airport, departure_airport) VALUES (" + flightNum + ", " + cost + ", " + sold + ", " + stops + ", \'" + departTime + "\', \'" + arrival + "\', \'" + destination + "\', \'" + departLoc + "\');";
 		inputData(esql, query);
 	}
 
@@ -758,9 +765,11 @@ public class DBproject {
 	public static void BookFlight(DBproject esql) {//5
 		// Given a customer and a flight that he/she wants to book, add a reservation to the DB
 
-		int customerID, flightNum, reserve;
+		int customerID, flightNum, reserve, checkReservation;
 		String input, status, query;
 		
+		System.out.println("-----------------------------------------------------------------");
+
 		//Get customer ID
 		customerID = getCustomerID();
 		
@@ -769,11 +778,13 @@ public class DBproject {
 		
 		try {
 			query = "SELECT status\nFROM Reservation\nWHERE cid = " + customerID + " AND fid = " + flightNum + ";";
-			
+			System.out.println("---------------------------------------");
+			checkReservation = esql.executeQueryAndPrintResult(query);
+
 			//Run query to see if it exists
-			if(esql.executeQueryAndPrintResult(query) == 0) {
+			if(checkReservation == 0) {
 				do {
-					System.out.println("The Reservation with customer ID " + customerID + " and flight number " + flightNum + " does not exist. Would you like to book a reservation? (Y/N): ");
+					System.out.print("The Reservation with customer ID " + customerID + " and flight number " + flightNum + " does not exist. Would you like to book a reservation? (Y/N): ");
 					try {
 						input = in.readLine();
 						if(input.equals("Y") || input.equals("y")) {
@@ -804,7 +815,7 @@ public class DBproject {
 							
 						}
 						//If user enter something other than Y,y,N,n
-						else if(!input.equals("N") || !input.equals("n")) {
+						else if(!input.equals("N") && !input.equals("n")) {
 							throw new RuntimeException("Your input is invalid!");
 						}
 						break;
@@ -816,9 +827,10 @@ public class DBproject {
 			}
 			//If reservation already exists...
 			else {
+				System.out.println("---------------------------------------");
 				do{
 					try{
-						System.out.println("Would you like to update the reservation? (Y/N): ");
+						System.out.print("Would you like to update the reservation? (Y/N): ");
 						input = in.readLine();
 						if(input.equals("Y") || input.equals("y")) {
 
@@ -835,7 +847,7 @@ public class DBproject {
 							}
 						}
 						//If user enter something other than Y,y,N,n
-						else if(!input.equals("N") || !input.equals("n")) {
+						else if(!input.equals("N") && !input.equals("n")) {
 							throw new RuntimeException("Your input is invalid!");
 						}
 						break;
@@ -848,6 +860,7 @@ public class DBproject {
 		}catch (Exception e) {
 			System.err.println (e.getMessage());
 		}
+		System.out.println("-----------------------------------------------------------------");
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////
@@ -855,6 +868,36 @@ public class DBproject {
 	/////////////////////////////////////////////////////////////////////////////////////
 	public static void ListNumberOfAvailableSeats(DBproject esql) {//6
 		// For flight number and date, find the number of availalbe seats (i.e. total plane capacity minus booked seats )
+
+		int flightNum, var;
+		String departTime;
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+		System.out.println("-----------------------------------------------------------------");
+
+		//Get flight number
+		flightNum = getFlightNumber();
+		
+		//Get departure time
+		do {
+			System.out.print("Input Departure Time (YYYY-MM-DD hh:mm): ");
+			try {
+				departTime = in.readLine();
+				LocalDate leaveDate = LocalDate.parse(departTime, formatter);
+				break;
+			}catch (Exception e) {
+				System.out.println("Your input is invalid!");
+				continue;
+			}
+		}while (true);
+
+		//Output query
+		String query = "SELECT Total_Seats - Seats_Sold as \"Seats Available\"\nFROM(\nSELECT P.seats as Total_Seats\nFROM Plane P, FlightInfo FI\nWHERE FI.flight_id = " + flightNum + " AND FI.plane_id = P.id\n)total,\n(\nSELECT F.num_sold as Seats_Sold\nFROM Flight F\nWHERE F.fnum = " + flightNum + " AND F.actual_departure_date = \'" + departTime + "\'\n)sold;";
+		var = outputData(esql, query);
+		if(var == 0) {
+			System.out.println("Flight or Departure Time does not exist");
+		System.out.println("-----------------------------------------------------------------");
+		}
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////
