@@ -373,6 +373,7 @@ public class DBproject {
 			System.out.println("-----------------------------------------------------------------");
 		}catch (Exception e) {
 			System.err.println (e.getMessage());
+			System.out.println("\nData was NOT inserted into the database!");
 		}
 		return var;
 	}
@@ -814,13 +815,14 @@ public class DBproject {
 							//Input new reservation status
 							System.out.print("Input NEW Reservation Status: ");
 							status = getReservationStatus();
-
+							
 							//Insert new data into database
 							try {
 								query = "INSERT INTO Reservation (rnum, cid, fid, status) VALUES (" + reserve + ", " + customerID + ", " + flightNum + ", \'" + status + "\');";
 								esql.executeUpdate(query);
 							}catch (Exception e) {
 								System.err.println (e.getMessage());
+								System.out.println("\nData was NOT inserted into the database!");
 							}
 							
 						}
@@ -834,6 +836,7 @@ public class DBproject {
 						continue;
 					}
 				}while (true);
+				System.out.println("\nReservation Created!");
 			}
 			//If reservation already exists...
 			else {
@@ -866,6 +869,7 @@ public class DBproject {
 						continue;
 					}
 				}while (true);
+				System.out.println("\nReservation Updated!");
 			}
 		}catch (Exception e) {
 			System.err.println (e.getMessage());
