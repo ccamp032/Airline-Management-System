@@ -820,11 +820,11 @@ public class DBproject {
 							try {
 								query = "INSERT INTO Reservation (rnum, cid, fid, status) VALUES (" + reserve + ", " + customerID + ", " + flightNum + ", \'" + status + "\');";
 								esql.executeUpdate(query);
+								System.out.println("\nReservation Created!");
 							}catch (Exception e) {
 								System.err.println (e.getMessage());
 								System.out.println("\nData was NOT inserted into the database!");
 							}
-							System.out.println("\nReservation Created!");
 						}
 						//If user enter something other than Y,y,N,n
 						else if(!input.equals("N") && !input.equals("n")) {
