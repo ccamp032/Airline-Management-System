@@ -824,7 +824,7 @@ public class DBproject {
 								System.err.println (e.getMessage());
 								System.out.println("\nData was NOT inserted into the database!");
 							}
-							
+							System.out.println("\nReservation Created!");
 						}
 						//If user enter something other than Y,y,N,n
 						else if(!input.equals("N") && !input.equals("n")) {
@@ -836,7 +836,6 @@ public class DBproject {
 						continue;
 					}
 				}while (true);
-				System.out.println("\nReservation Created!");
 			}
 			//If reservation already exists...
 			else {
@@ -858,6 +857,7 @@ public class DBproject {
 							}catch (Exception e) {
 								System.err.println (e.getMessage());
 							}
+							System.out.println("\nReservation Updated!");
 						}
 						//If user enter something other than Y,y,N,n
 						else if(!input.equals("N") && !input.equals("n")) {
@@ -869,7 +869,6 @@ public class DBproject {
 						continue;
 					}
 				}while (true);
-				System.out.println("\nReservation Updated!");
 			}
 		}catch (Exception e) {
 			System.err.println (e.getMessage());
