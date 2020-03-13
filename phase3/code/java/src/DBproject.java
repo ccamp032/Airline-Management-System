@@ -671,7 +671,7 @@ public class DBproject {
 			try {
 				arrival = in.readLine();
 				LocalDate arrivalDate = LocalDate.parse(arrival, formatter);
-				if(!arrivalDate.isAfter(leaveDate))
+				if(leaveDate.isBefore(arrivalDate))
 					throw new RuntimeException();
 				break;
 			}catch (Exception e) {
