@@ -668,12 +668,10 @@ public class DBproject {
 
 		//Get arrival time
 		do {
-			System.out.print("Input Arrival Time (YYYY-MM-DD hh:mm) (Note Arrival Time cannot be before Departure Time): ");
+			System.out.print("Input Arrival Time (YYYY-MM-DD hh:mm): ");
 			try {
 				arrival = in.readLine();
 				LocalDate arrivalDate = LocalDate.parse(arrival, formatter);
-				if(leaveDate.isBefore(arrivalDate))
-					throw new RuntimeException();
 				break;
 			}catch (Exception e) {
 				System.out.println("Your input is invalid!");
