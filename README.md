@@ -1,4 +1,4 @@
-# Airline-Management-System
+# Airline Management System Project Description
 
 ### Introduction
 In this project, we will model and build an airline management system. We will use this
@@ -30,4 +30,4 @@ Your tasks in this phase will be: <br>
 ● Use the client application to support specific functionality and queries for your online
 booking system.<br>
 
-###### Project Description taken from Prof. Mariam Salloum's  CS166: Database Management Systems course project write up 
+###### Project Description taken from Prof. Mariam Salloum's CS166: Database Management Systems course project write up 
